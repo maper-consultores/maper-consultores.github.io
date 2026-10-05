@@ -20,6 +20,10 @@ Guardar no publica cambios en Internet. Para actualizar el sitio público, publi
 - `marca.json`: nombre, datos y enlaces de la marca.
 - `.git` y `.github`: historial y configuración de GitHub.
 
-El editor utiliza Python sin paquetes adicionales y escucha sólo en este ordenador. El acceso directo utiliza el Python incluido con Codex; si no está disponible, utiliza `py -3`.
+El editor utiliza Python sin paquetes adicionales y escucha sólo en este ordenador. Los dos archivos de inicio detectan Python y Git disponibles, incluidos los instalados normalmente. Si falta una herramienta, la instalan con WinGet para el usuario actual. El editor requiere Python 3.10 o posterior y no necesita paquetes adicionales.
 
 Los archivos históricos de NUMERA permanecen en `assets/logos` como referencia; el logo utilizado actualmente se configura desde el editor.
+
+## En otra computadora Windows
+
+Usa la carpeta completa del sitio, incluidos scripts y el historial .git. La carpeta puede estar en otra unidad: los accesos usan su propia ubicación. Abre ABRIR EDITOR.cmd para editar y SUBIR A GITHUB.cmd para publicar. Solo se instala la herramienta que falta; no se reinstalan las disponibles. La primera instalación necesita Internet y WinGet (Instalador de aplicaciones de Microsoft). Si Windows solicita permisos, autorízalos. En otra PC, GitHub puede pedir iniciar sesión con una cuenta que tenga acceso al repositorio. Cierra la ventana del editor al terminar; cada inicio utiliza un puerto libre.
