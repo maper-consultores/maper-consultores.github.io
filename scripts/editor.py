@@ -89,6 +89,9 @@ class Render(HTMLParser):
         if self.suppressed:
             return
         attrs = dict(attrs)
+        # HTMLParser normaliza atributos; SVG necesita conservar viewBox.
+        if 'viewbox' in attrs:
+            attrs['viewBox'] = attrs.pop('viewbox')
         if 'data-brand-content' in attrs:
             attrs['content'] = substitute(attrs['data-brand-content'], self.vals)
         if 'data-brand-url' in attrs:
@@ -108,7 +111,11 @@ class Render(HTMLParser):
             self.suppressed = tag
 
     def handle_startendtag(self, tag, attrs):
+        if self.suppressed:
+            return
         self.handle_starttag(tag, attrs)
+        # En SVG, rect/path/line deben cerrarse; no son elementos vacíos HTML.
+        self.output[-1] = self.output[-1][:-1] + ' />'
 
     def handle_endtag(self, tag):
         if self.suppressed:
