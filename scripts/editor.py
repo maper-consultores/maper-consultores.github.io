@@ -11,6 +11,9 @@ import re
 import tempfile
 import threading
 import webbrowser
+import os
+import time
+import logging
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ('index.html', 'contacto/index.html')
@@ -134,6 +137,33 @@ class Render(HTMLParser):
             self.output.append('&#' + name + ';')
 
 
+def write_file(path, text):
+    """Drive puede bloquear la sustitución aunque permita escribir el archivo."""
+    temp = None
+    try:
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=path.parent,
+                                         suffix='.tmp', delete=False) as file:
+            file.write(text)
+            temp = Path(file.name)
+        for attempt in range(5):
+            try:
+                temp.replace(path)
+                return
+            except PermissionError:
+                time.sleep(0.15 * (attempt + 1))
+        # Algunos discos sincronizados no admiten reemplazar un archivo abierto.
+        with path.open('w', encoding='utf-8') as file:
+            file.write(text)
+            file.flush()
+            os.fsync(file.fileno())
+    finally:
+        if temp is not None and temp.exists():
+            try:
+                temp.unlink()
+            except OSError:
+                pass
+
+
 def save(config):
     config = validate(config)
     rendered = {}
@@ -144,13 +174,19 @@ def save(config):
     serialized = json.dumps(config, ensure_ascii=False, indent=2)
     rendered['marca.json'] = serialized + '\n'
     rendered['assets/js/marca-config.js'] = 'window.SITE_BRAND = ' + serialized.replace('<', '\\u003c') + ';\n'
-    # Cada archivo se sustituye por una versión completa; no se truncan archivos al escribir.
-    for name, text in rendered.items():
-        path = ROOT / name
-        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=path.parent, delete=False) as file:
-            file.write(text)
-            temp = Path(file.name)
-        temp.replace(path)
+    previous = {name: (ROOT / name).read_text(encoding='utf-8') for name in rendered}
+    attempted = []
+    try:
+        for name, text in rendered.items():
+            attempted.append(name)
+            write_file(ROOT / name, text)
+    except OSError:
+        for name in reversed(attempted):
+            try:
+                write_file(ROOT / name, previous[name])
+            except OSError:
+                logging.exception('No se pudo restaurar %s', name)
+        raise
     return config
 
 
@@ -204,6 +240,7 @@ class EditorHandler(SimpleHTTPRequestHandler):
         except (ValueError, KeyError) as exc:
             self.reply(400, {'error': str(exc)})
         except OSError:
+            logging.exception('Error al guardar el sitio')
             self.reply(500, {'error': 'No se pudo guardar. Comprueba los permisos de esta carpeta.'})
 
 
