@@ -91,6 +91,7 @@ try {
         if (-not (Test-Path -LiteralPath (Join-Path $siteRoot '.git'))) {
             throw 'Falta el historial .git. Utiliza la carpeta completa del sitio sincronizada por Drive, no solamente los archivos HTML.'
         }
+        Get-ChildItem -LiteralPath (Join-Path $siteRoot '.git') -Recurse -Force -Filter 'desktop.ini' -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
         Write-Host 'Publicando los cambios guardados... En otra PC, GitHub puede pedirte iniciar sesion.'
         Invoke-Git @('fetch','origin')
         Invoke-Git @('merge','--ff-only','origin/main')

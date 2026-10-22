@@ -54,3 +54,22 @@
     right: -50px;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .glow {
+    animation: none !important;
+  }
+  .fade,
+  .fade.visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

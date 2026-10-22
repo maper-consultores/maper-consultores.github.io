@@ -22,7 +22,7 @@ Guardar no publica cambios en Internet. Para actualizar el sitio público, publi
 
 El editor utiliza Python sin paquetes adicionales y escucha sólo en este ordenador. Los dos archivos de inicio detectan Python y Git disponibles, incluidos los instalados normalmente. Si falta una herramienta, la instalan con WinGet para el usuario actual. El editor requiere Python 3.10 o posterior y no necesita paquetes adicionales.
 
-Los archivos históricos de NUMERA permanecen en `assets/logos` como referencia; el logo utilizado actualmente se configura desde el editor.
+El isotipo vectorial base (`assets/logos/isotipo.svg`) y la imagen de vista previa (`assets/logos/og-image.jpg`) permanecen en `assets/logos`; el logo activo se administra desde el editor y los recursos históricos de etapas previas se conservan en la carpeta de archivo del proyecto.
 
 ## En otra computadora Windows
 

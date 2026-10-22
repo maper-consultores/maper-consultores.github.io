@@ -4,9 +4,10 @@
   --card: rgba(255, 255, 255, .05);
   --border: rgba(255, 255, 255, .08);
   --text: #ffffff;
-  --muted: rgba(255, 255, 255, .72);
-  --accent: #7C6CFF;
+  --muted: rgba(255, 255, 255, .74);
+  --accent: #A99EFF;
   --accent2: #A99EFF;
+  --btn-text: #081426;
 }
 
 * {
@@ -17,16 +18,25 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: linear-gradient(180deg, #081426 0%, #0b1d36 100%);
   color: var(--text);
   overflow-x: hidden;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 body::before {
@@ -44,4 +54,12 @@ body::before {
 
 a {
   text-decoration: none;
+  color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
 }

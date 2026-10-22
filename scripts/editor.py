@@ -65,7 +65,10 @@ def values(config, prefix=''):
     result = dict(config)
     result['fullName'] = config['name'] + ' ' + config['descriptor']
     result['cta'] = 'Hablar con ' + config['name']
-    result['whatsapp'] = 'https://wa.me/' + re.sub(r'\D', '', config['phone']) + '?text=' + quote('Hola, me gustaría conocer los servicios de ' + result['fullName'] + '.')
+    digits = re.sub(r'\D', '', config['phone'])
+    local_digits = digits[2:] if len(digits) == 12 and digits.startswith('52') else digits
+    result['phoneDisplay'] = f"{local_digits[:3]} {local_digits[3:6]} {local_digits[6:]}" if len(local_digits) == 10 else config['phone']
+    result['whatsapp'] = 'https://wa.me/' + digits + '?text=' + quote('Hola, me gustaría conocer los servicios de ' + result['fullName'] + '.')
     result['mail'] = 'mailto:' + config['email'] + '?subject=' + quote('Solicitud de información') + '&body=' + quote('Hola, equipo ' + config['name'] + '.\nMe gustaría recibir información sobre sus servicios.')
     result['icon'] = config['icon'] if config['icon'].startswith('data:') else prefix + config['icon']
     result['instagramHandle'] = '@' + urlparse(config['instagram']).path.strip('/') if config['instagram'] else ''
